@@ -599,6 +599,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 374293945642251906, guid: 6b5100a5c26054ea0ad42e90241b1835,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 374293945642251906, guid: 6b5100a5c26054ea0ad42e90241b1835,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 374293945642251906, guid: 6b5100a5c26054ea0ad42e90241b1835,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1230810035058214772, guid: 6b5100a5c26054ea0ad42e90241b1835,
         type: 3}
       propertyPath: playerSO
