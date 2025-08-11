@@ -9,10 +9,10 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
     }
 
-    public void Move(Vector2 moveDirection, float moveSpeed)
+    public void Move(Vector2 inputDir, float moveSpeed)
     {
-        Vector2 inputDir = moveDirection;
         Vector3 moveDir = new Vector3(inputDir.x, 0, inputDir.y).normalized;
+        moveDir = transform.TransformDirection(moveDir);
         characterController.Move(moveDir * moveSpeed * Time.deltaTime);
     }
 

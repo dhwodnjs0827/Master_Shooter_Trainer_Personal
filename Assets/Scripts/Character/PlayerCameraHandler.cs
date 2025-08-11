@@ -1,4 +1,5 @@
 using Cinemachine;
+using DataDeclaration;
 using UnityEngine;
 
 public class PlayerCameraHandler : MonoBehaviour
@@ -22,12 +23,23 @@ public class PlayerCameraHandler : MonoBehaviour
         nonADSCamera.gameObject.SetActive(!isADS);
     }
 
-    public void Look(Vector2 lookDirection)
+    public void Look(Vector2 inputDir)
     {
-        Debug.Log(lookDirection);
-        float deltaY = lookDirection.y;
-        //camContainer.localRotation = Quaternion.Euler(deltaY * Time.deltaTime, 0f, 0f);
-        //camContainer.rotation = Quaternion.LookRotation(lookDirection);
+        // 상하 회전
+        Vector3 curRot = camContainer.localEulerAngles;
+        float rotX = curRot.x;
+        // 0~360 범위를 -180~180도로 변환
+        if (rotX > 180)
+        {
+            rotX -= 360f;
+        }
+        rotX -= inputDir.y * Constants.MOUSE_SENSITIVITY;
+        rotX = Mathf.Clamp(rotX, Constants.MIN_MOUSE_ROT_Y, Constants.MAX_MOUSE_ROT_Y);
+        camContainer.localEulerAngles = new Vector3(rotX, 0f, 0f);
+        
+        // 좌우 회전
+        float deltaX = inputDir.x * Constants.MOUSE_SENSITIVITY;
+        transform.Rotate(Vector3.up * deltaX);
     }
 
     public void ApplyRecoil(float recoil)
