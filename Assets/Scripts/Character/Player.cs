@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     private PlayerInputHandler inputHandler;
     private PlayerController controller;
     private PlayerCameraHandler cameraHandler;
+    private PlayerEquipment equipment;
     private PlayerStatHandler stat;
 
     private void Awake()
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour
         inputHandler = GetComponent<PlayerInputHandler>();
         controller = GetComponent<PlayerController>();
         cameraHandler = GetComponent<PlayerCameraHandler>();
+        equipment = GetComponent<PlayerEquipment>();
         stat = new PlayerStatHandler(playerSO);
     }
 
