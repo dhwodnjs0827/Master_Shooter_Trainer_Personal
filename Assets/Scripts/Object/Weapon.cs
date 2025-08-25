@@ -8,7 +8,7 @@ public class Weapon : MonoBehaviour
 
     public CinemachineVirtualCamera ADSCamera => adsCamera;
 
-    public void Shot()
+    public void Shoot()
     {
         Debug.Log("발사!");
     }

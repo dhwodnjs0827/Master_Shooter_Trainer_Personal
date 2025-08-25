@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         inputHandler.OnADSStarted += TriggerADS;
+        inputHandler.OnShootStarted += equipment.Weapon.Shoot;
     }
 
     private void Start()
@@ -57,7 +58,8 @@ public class Player : MonoBehaviour
 
     private void OnDisable()
     {
-        inputHandler.OnADSStarted -= TriggerADS; 
+        inputHandler.OnADSStarted -= TriggerADS;
+        inputHandler.OnShootStarted -= equipment.Weapon.Shoot;
     }
 
     private void CheckMoving()

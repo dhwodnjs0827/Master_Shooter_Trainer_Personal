@@ -17,6 +17,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnMove;
     public event Action OnMoveCanceled;
     public event Action OnADSStarted;
+    public event Action OnShootStarted;
 
     private void Awake()
     {
@@ -46,6 +47,8 @@ public class PlayerInputHandler : MonoBehaviour
         actions.Look.canceled += LookCanceled;
 
         actions.ADS.started += ADSStarted;
+
+        actions.Shoot.started += ShootStarted;
     }
 
     private void RemoveInputs()
@@ -58,6 +61,8 @@ public class PlayerInputHandler : MonoBehaviour
         actions.Look.canceled -= LookCanceled;
 
         actions.ADS.started -= ADSStarted;
+
+        actions.Shoot.started -= ShootStarted;
     }
 
     private void MoveStarted(InputAction.CallbackContext context)
@@ -90,5 +95,10 @@ public class PlayerInputHandler : MonoBehaviour
     private void ADSStarted(InputAction.CallbackContext context)
     {
         OnADSStarted?.Invoke();
+    }
+
+    private void ShootStarted(InputAction.CallbackContext context)
+    {
+        OnShootStarted?.Invoke();
     }
 }

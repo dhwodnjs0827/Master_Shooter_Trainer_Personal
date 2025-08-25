@@ -7,7 +7,6 @@ public class PlayerCameraHandler : MonoBehaviour
 {
     private Player player;
 
-    [Header("Virtual Cam")]
     [SerializeField] private Transform armModel;
 
     [SerializeField] private CinemachineVirtualCamera playerCamera;
