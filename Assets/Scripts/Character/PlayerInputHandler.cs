@@ -6,15 +6,16 @@ public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerInputAction playerInputAction;
     private PlayerInputAction.PlayerActions actions;
-    
+
     private Vector2 moveDirection;
     private Vector2 lookDirection;
-    
+
     public Vector2 MoveDirection => moveDirection;
     public Vector2 LookDirection => lookDirection;
-    public event Action OnADS;
-    public event Action OnShoot;
-    public event Action OnReload;
+
+    public event Action OnMoveStarted;
+    public event Action OnMove;
+    public event Action OnMoveCanceled;
 
     private void Awake()
     {
@@ -36,42 +37,39 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void AddInputs()
     {
-         actions.Move.performed += MovePerformed;
-         actions.Move.canceled += MoveCanceled;
-         
-         actions.Look.performed += LookPerformed;
-         actions.Look.canceled += LookCanceled;
+        actions.Move.started += MoveStarted;
+        actions.Move.performed += MovePerformed;
+        actions.Move.canceled += MoveCanceled;
 
-         actions.Shoot.started += ShootStarted;
-         
-         actions.ADS.started += ADSStarted;
-         
-         actions.Reload.performed += ReloadStared;
+        actions.Look.performed += LookPerformed;
+        actions.Look.canceled += LookCanceled;
     }
 
     private void RemoveInputs()
     {
+        actions.Move.started -= MoveStarted;
         actions.Move.performed -= MovePerformed;
         actions.Move.canceled -= MoveCanceled;
-        
+
         actions.Look.performed -= LookPerformed;
         actions.Look.canceled -= LookCanceled;
-        
-        actions.Shoot.started -= ShootStarted;
-         
-        actions.ADS.started -= ADSStarted;
-         
-        actions.Reload.started -= ReloadStared;
+    }
+
+    private void MoveStarted(InputAction.CallbackContext context)
+    {
+        OnMoveStarted?.Invoke();
     }
 
     private void MovePerformed(InputAction.CallbackContext context)
     {
         moveDirection = context.ReadValue<Vector2>();
+        OnMove?.Invoke();
     }
 
     private void MoveCanceled(InputAction.CallbackContext context)
     {
         moveDirection = Vector2.zero;
+        OnMoveCanceled?.Invoke();
     }
 
     private void LookPerformed(InputAction.CallbackContext context)
@@ -82,20 +80,5 @@ public class PlayerInputHandler : MonoBehaviour
     private void LookCanceled(InputAction.CallbackContext context)
     {
         lookDirection = Vector2.zero;
-    }
-
-    private void ShootStarted(InputAction.CallbackContext context)
-    {
-        OnShoot?.Invoke();
-    }
-
-    private void ADSStarted(InputAction.CallbackContext context)
-    {
-        OnADS?.Invoke();
-    }
-
-    private void ReloadStared(InputAction.CallbackContext context)
-    {
-        OnReload?.Invoke();
     }
 }

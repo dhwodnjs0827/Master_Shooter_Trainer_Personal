@@ -6,24 +6,17 @@ public class Player : MonoBehaviour
     private PlayerInputHandler inputHandler;
     private PlayerController controller;
     private PlayerCameraHandler cameraHandler;
-    private PlayerEquipment equipment;
     private PlayerStatHandler stat;
+
+    public PlayerInputHandler InputHandler => inputHandler;
+    public PlayerStatHandler Stat => stat;
 
     private void Awake()
     {
         inputHandler = GetComponent<PlayerInputHandler>();
         controller = GetComponent<PlayerController>();
         cameraHandler = GetComponent<PlayerCameraHandler>();
-        equipment = GetComponent<PlayerEquipment>();
         stat = new PlayerStatHandler(playerSO);
-    }
-
-    private void Start()
-    {
-        inputHandler.OnADS += cameraHandler.TriggerADS;
-        inputHandler.OnShoot += controller.Shoot;
-        inputHandler.OnShoot += () => cameraHandler.ApplyRecoil(stat.Recoil);
-        inputHandler.OnReload += controller.Reload;
     }
 
     private void Update()

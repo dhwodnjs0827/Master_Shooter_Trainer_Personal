@@ -15,14 +15,4 @@ public class PlayerController : MonoBehaviour
         moveDir = transform.TransformDirection(moveDir);
         characterController.Move(moveDir * moveSpeed * Time.deltaTime);
     }
-
-    public void Shoot()
-    {
-        Debug.Log("총기 발사");
-    }
-
-    public void Reload()
-    {
-        Debug.Log("재장전");
-    }
 }
