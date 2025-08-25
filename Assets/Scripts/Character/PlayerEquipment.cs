@@ -9,7 +9,7 @@ public class PlayerEquipment : MonoBehaviour
 
     public void EquipWeapon()
     {
-        var prefab = Resources.Load<Weapon>("Prefabs/Weapon/Pistol");
+        var prefab = Resources.Load<Weapon>("Prefabs/Weapon/W0001");
         weapon = Instantiate(prefab, weaponPos);
     }
 }

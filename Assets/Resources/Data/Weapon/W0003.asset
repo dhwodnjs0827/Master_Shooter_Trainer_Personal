@@ -10,7 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3130c8d29b3124929b2f71b0fff9ad51, type: 3}
-  m_Name: TestWeapon
+  m_Name: W0003
   m_EditorClassIdentifier: 
-  Damage: 10
-  MaxAmmo: 10
+  ID: W0003
+  Name: H&K
+  Description: "\uBC18\uB3D9\uACFC \uC704\uB825\uC774 \uAC15\uD558\uACE0, \uC7A5\uD0C4\uC218\uAC00
+    \uC801\uC740 \uCD1D"
+  Recoil: 35
+  Damage: 8
+  ReloadTime: 2.5
+  MaxAmmo: 7

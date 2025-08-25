@@ -1988,7 +1988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0695cd4ba41f4727bb1ec854845c4a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSO: {fileID: 11400000, guid: dcff71302c63a4bcea9e185bcc5fa2b3, type: 2}
+  playerSO: {fileID: 11400000, guid: f49665a5ed05041a4a09fe348f990391, type: 2}
 --- !u!114 &297419621134253133
 MonoBehaviour:
   m_ObjectHideFlags: 0

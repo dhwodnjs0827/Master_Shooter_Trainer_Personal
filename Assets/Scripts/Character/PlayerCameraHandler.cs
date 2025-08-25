@@ -1,6 +1,7 @@
 using System.Collections;
 using Cinemachine;
 using DataDeclaration;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerCameraHandler : MonoBehaviour
@@ -130,5 +131,21 @@ public class PlayerCameraHandler : MonoBehaviour
         currentSteopShakeNoise = isADS ? weaponStepShakeNoise : playerStepShakeNoise;
         playerCamera.gameObject.SetActive(!isADS);
         weaponCamera.gameObject.SetActive(isADS);
+    }
+
+    private IEnumerator ApplyRecoil(float recoil)
+    {
+        Vector3 currentRotation = armModel.transform.localEulerAngles;
+        var targetRotationX = currentRotation.x + recoil;
+        var targetRotation = quaternion.Euler(new Vector3(targetRotationX, currentRotation.y, currentRotation.z));
+        float duration = 0.5f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            armModel.rotation = Quaternion.Lerp(armModel.rotation, targetRotation, elapsed / duration);
+            yield return null;
+        }
+        armModel.rotation = targetRotation;
     }
 }

@@ -282,7 +282,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 67.38013
+    FieldOfView: 60
     OrthographicSize: 10
     NearClipPlane: 0.09999999
     FarClipPlane: 1000
@@ -477,7 +477,7 @@ GameObject:
   - component: {fileID: 5886395143191293730}
   - component: {fileID: 6315121315973869057}
   m_Layer: 0
-  m_Name: Pistol
+  m_Name: W0002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f55a4475621c64c78887f8e56abc209f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSO: {fileID: 11400000, guid: 366077a98639c43c8b1444edf7f356b1, type: 2}
+  weaponSO: {fileID: 11400000, guid: 3a42b266c8fa14a7ea1c881ab6a2696e, type: 2}
   adsCamera: {fileID: 1667081665678896394}
 --- !u!1 &8951359130554699261
 GameObject:

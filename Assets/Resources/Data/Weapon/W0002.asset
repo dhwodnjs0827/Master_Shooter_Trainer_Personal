@@ -9,10 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f43762264bf34b9097508ae51f28c25, type: 3}
-  m_Name: TestPlayer
+  m_Script: {fileID: 11500000, guid: 3130c8d29b3124929b2f71b0fff9ad51, type: 3}
+  m_Name: W0002
   m_EditorClassIdentifier: 
-  Speed: 5
-  Step: 90
-  Recoil: 5
-  Handling: 5
+  ID: W0002
+  Name: Glock
+  Description: "\uBC18\uB3D9\uACFC \uC704\uB825, \uC7A5\uD0C4\uC218 \uBAA8\uB450
+    \uD3C9\uBC94\uD55C \uCD1D"
+  Recoil: 25
+  Damage: 6
+  ReloadTime: 2
+  MaxAmmo: 10
