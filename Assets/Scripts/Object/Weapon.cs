@@ -1,6 +1,15 @@
+using Cinemachine;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public WeaponSO weaponSO;
+    [SerializeField] private WeaponSO weaponSO;
+    [SerializeField] private CinemachineVirtualCamera adsCamera;
+
+    public CinemachineVirtualCamera ADSCamera => adsCamera;
+
+    public void Shot()
+    {
+        Debug.Log("발사!");
+    }
 }

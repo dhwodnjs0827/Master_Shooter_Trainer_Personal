@@ -225,8 +225,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 8ecb80dd2acad4ba085c313249d77966, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 0.14
-  m_FrequencyGain: 1
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 0.03
   mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &2614664133154758281
 GameObject:
@@ -253,8 +253,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2614664133154758281}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0002593994, y: -0.000016894192, z: -0.06547253, w: 0.99785435}
-  m_LocalPosition: {x: 0.0069019687, y: 0.09721159, z: -0.2870486}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.06, z: -0.2870486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -517,6 +517,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponSO: {fileID: 11400000, guid: 366077a98639c43c8b1444edf7f356b1, type: 2}
+  adsCamera: {fileID: 1667081665678896394}
 --- !u!1 &8951359130554699261
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,43 +9,38 @@ public class PlayerCameraHandler : MonoBehaviour
 
     [Header("Virtual Cam")]
     [SerializeField] private Transform armModel;
-    [SerializeField] private CinemachineVirtualCamera playerVirtualCamera;
 
-    [Header("Step Shake")]
-    [SerializeField] private CinemachineBasicMultiChannelPerlin stepShakeNoise;
-    private float stepNoiseFrequencyGain = 0.028f;
+    [SerializeField] private CinemachineVirtualCamera playerCamera;
+    private CinemachineVirtualCamera weaponCamera;
+
+    private CinemachineBasicMultiChannelPerlin currentSteopShakeNoise;
+    private CinemachineBasicMultiChannelPerlin playerStepShakeNoise;
+    private CinemachineBasicMultiChannelPerlin weaponStepShakeNoise;
+
     private float stepNoiseAmplitudeGain = 0.14f;
     private Coroutine stepFadeCoroutine;
-    private bool isMoving;
-    private bool isMoveTransition;
+
 
     private void Awake()
     {
         player = GetComponent<Player>();
-        stepShakeNoise = playerVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        stepShakeNoise.m_FrequencyGain = stepNoiseFrequencyGain;
-        isMoving = false;
-        isMoveTransition = false;
+        playerStepShakeNoise = playerCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        currentSteopShakeNoise = playerStepShakeNoise;
+    }
+
+    private void OnEnable()
+    {
+        player.OnADS += ChangeCurrentCamera;
     }
 
     private void Update()
     {
-        CheckMoving();
-        if (isMoveTransition)
-        {
-            if (stepFadeCoroutine != null)
-            {
-                StopCoroutine(stepFadeCoroutine);
-            }
-            if (isMoving)
-                {
-                    stepFadeCoroutine = StartCoroutine(FadeStepShakeIn());
-                }
-                else
-                {
-                    stepFadeCoroutine = StartCoroutine(FadeStepShakeOut());
-                }
-        }
+        StepNoise();
+    }
+
+    private void OnDisable()
+    {
+        player.OnADS -= ChangeCurrentCamera;
     }
 
     public void Look(Vector2 inputDir)
@@ -67,70 +62,74 @@ public class PlayerCameraHandler : MonoBehaviour
         transform.Rotate(Vector3.up * deltaX);
     }
 
+    public void RegisterWeaponCamera(CinemachineVirtualCamera virtualCamera)
+    {
+        weaponCamera = virtualCamera;
+        weaponStepShakeNoise = weaponCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+    }
+
     private IEnumerator FadeStepShakeIn()
     {
         // step 수치에 따른 흔들림 계산
         //stepNoiseAmplitudeGain = 0.14f * (1f - stepValue / 100f);
 
-        float currentAmplitude = stepShakeNoise.m_AmplitudeGain;
+        float currentAmplitude = currentSteopShakeNoise.m_AmplitudeGain;
         float duration = 0.5f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            stepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepNoiseAmplitudeGain, elapsed/duration);
+            weaponStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepNoiseAmplitudeGain, elapsed / duration);
+            playerStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepNoiseAmplitudeGain, elapsed / duration);
             yield return null;
         }
-        stepShakeNoise.m_AmplitudeGain = stepNoiseAmplitudeGain;
+        playerStepShakeNoise.m_AmplitudeGain = stepNoiseAmplitudeGain;
+        weaponStepShakeNoise.m_AmplitudeGain = stepNoiseAmplitudeGain;
         stepFadeCoroutine = null;
     }
 
     private IEnumerator FadeStepShakeOut()
     {
-        float currentAmplitude = stepShakeNoise.m_AmplitudeGain;
+        float currentAmplitude = currentSteopShakeNoise.m_AmplitudeGain;
         float duration = 0.5f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            stepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, 0f, elapsed / duration);
+            weaponStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, 0f, elapsed / duration);
+            playerStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, 0f, elapsed / duration);
             yield return null;
         }
-        stepShakeNoise.m_AmplitudeGain = 0f;
+        playerStepShakeNoise.m_AmplitudeGain = 0f;
+        weaponStepShakeNoise.m_AmplitudeGain = 0f;
         stepFadeCoroutine = null;
     }
 
-    private void CheckMoving()
+    private void StepNoise()
     {
-        var currentMoveInput = player.InputHandler.MoveDirection.magnitude;
+        if (player.IsMoveTransition)
+        {
+            if (stepFadeCoroutine != null)
+            {
+                StopCoroutine(stepFadeCoroutine);
+            }
+            if (player.IsMoving)
+            {
+                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn());
+            }
+            else
+            {
+                stepFadeCoroutine = StartCoroutine(FadeStepShakeOut());
+            }
+        }
+    }
 
-        if (isMoving)
-        {
-            if (currentMoveInput > 0f)
-            {
-                isMoving = true;
-                isMoveTransition = false;
-            }
-            else
-            {
-                isMoving = false;
-                isMoveTransition = true;
-            }
-        }
-        else
-        {
-            if (currentMoveInput > 0f)
-            {
-                isMoving = true;
-                isMoveTransition = true;
-            }
-            else
-            {
-                isMoving = false;
-                isMoveTransition = false;
-            }
-        }
+    private void ChangeCurrentCamera(bool isADS)
+    {
+        currentSteopShakeNoise = isADS ? weaponStepShakeNoise : playerStepShakeNoise;
+        playerCamera.gameObject.SetActive(!isADS);
+        weaponCamera.gameObject.SetActive(isADS);
     }
 }

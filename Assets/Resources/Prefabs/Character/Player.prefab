@@ -1926,6 +1926,7 @@ GameObject:
   - component: {fileID: 297419621134253133}
   - component: {fileID: 3806497207877838552}
   - component: {fileID: 5215782784988258287}
+  - component: {fileID: 4127565074494555189}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2013,8 +2014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   armModel: {fileID: 374293945642251906}
-  playerVirtualCamera: {fileID: 285296567260035412}
-  stepShakeNoise: {fileID: 0}
+  playerCamera: {fileID: 285296567260035412}
 --- !u!114 &5215782784988258287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2027,6 +2027,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b0a0679886d4a42b44ce43e9e9638c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4127565074494555189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7011989435637761672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eefed0b23e3854e21a78d7af880c6c85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponPos: {fileID: 4044547979031113072}
 --- !u!1 &7149836727863799120
 GameObject:
   m_ObjectHideFlags: 0

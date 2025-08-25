@@ -16,6 +16,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnMoveStarted;
     public event Action OnMove;
     public event Action OnMoveCanceled;
+    public event Action OnADSStarted;
 
     private void Awake()
     {
@@ -43,6 +44,8 @@ public class PlayerInputHandler : MonoBehaviour
 
         actions.Look.performed += LookPerformed;
         actions.Look.canceled += LookCanceled;
+
+        actions.ADS.started += ADSStarted;
     }
 
     private void RemoveInputs()
@@ -53,6 +56,8 @@ public class PlayerInputHandler : MonoBehaviour
 
         actions.Look.performed -= LookPerformed;
         actions.Look.canceled -= LookCanceled;
+
+        actions.ADS.started -= ADSStarted;
     }
 
     private void MoveStarted(InputAction.CallbackContext context)
@@ -80,5 +85,10 @@ public class PlayerInputHandler : MonoBehaviour
     private void LookCanceled(InputAction.CallbackContext context)
     {
         lookDirection = Vector2.zero;
+    }
+
+    private void ADSStarted(InputAction.CallbackContext context)
+    {
+        OnADSStarted?.Invoke();
     }
 }
