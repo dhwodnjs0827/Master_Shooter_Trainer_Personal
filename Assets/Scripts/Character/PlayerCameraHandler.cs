@@ -46,16 +46,16 @@ public class PlayerCameraHandler : MonoBehaviour
     public void Look(Vector2 inputDir)
     {
         // 상하 회전
-        Vector3 curRot = armModel.localEulerAngles;
-        float rotX = curRot.x;
+        Vector3 curRotation = armModel.localEulerAngles;
+        float rotationX = curRotation.x;
         // 0~360 범위를 -180~180도로 변환
-        if (rotX > 180)
+        if (rotationX > 180)
         {
-            rotX -= 360f;
+            rotationX -= 360f;
         }
-        rotX -= inputDir.y * Constants.MOUSE_SENSITIVITY;
-        rotX = Mathf.Clamp(rotX, Constants.MIN_MOUSE_ROT_Y, Constants.MAX_MOUSE_ROT_Y);
-        armModel.localEulerAngles = new Vector3(rotX, 0f, 0f);
+        rotationX -= inputDir.y * Constants.MOUSE_SENSITIVITY;
+        rotationX = Mathf.Clamp(rotationX, Constants.MIN_MOUSE_ROT_Y, Constants.MAX_MOUSE_ROT_Y);
+        armModel.localEulerAngles = new Vector3(rotationX, 0f, 0f);
 
         // 좌우 회전
         float deltaX = inputDir.x * Constants.MOUSE_SENSITIVITY;
@@ -133,19 +133,18 @@ public class PlayerCameraHandler : MonoBehaviour
         weaponCamera.gameObject.SetActive(isADS);
     }
 
-    private IEnumerator ApplyRecoil(float recoil)
+    public IEnumerator ApplyRecoil(float recoil)
     {
-        Vector3 currentRotation = armModel.transform.localEulerAngles;
-        var targetRotationX = currentRotation.x + recoil;
-        var targetRotation = quaternion.Euler(new Vector3(targetRotationX, currentRotation.y, currentRotation.z));
-        float duration = 0.5f;
+        Vector3 currentRotation = armModel.localEulerAngles;
+        Vector3 targetRotation = new Vector3(currentRotation.x - recoil, 0f, 0f);
+        float duration = 0.05f;
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            armModel.rotation = Quaternion.Lerp(armModel.rotation, targetRotation, elapsed / duration);
+            armModel.localEulerAngles = Vector3.Lerp(currentRotation, targetRotation, elapsed / duration);
             yield return null;
         }
-        armModel.rotation = targetRotation;
+        armModel.localEulerAngles = targetRotation;
     }
 }

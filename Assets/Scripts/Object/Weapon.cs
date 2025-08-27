@@ -18,7 +18,7 @@ public class Weapon : MonoBehaviour
     void Awake()
     {
         maxAmmo = weaponSO.MaxAmmo;
-        currentAmmo = maxAmmo;  
+        currentAmmo = maxAmmo;
     }
 
     public void Shoot()

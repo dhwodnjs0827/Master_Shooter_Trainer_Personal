@@ -37,12 +37,12 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         inputHandler.OnADSStarted += TriggerADS;
-        inputHandler.OnShootStarted += equipment.Weapon.Shoot;
+        inputHandler.OnShootStarted += Shoot;
     }
 
     private void Start()
     {
-        cameraHandler.RegisterWeaponCamera(equipment.Weapon.ADSCamera);   
+        cameraHandler.RegisterWeaponCamera(equipment.Weapon.ADSCamera);
     }
 
     private void Update()
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         inputHandler.OnADSStarted -= TriggerADS;
-        inputHandler.OnShootStarted -= equipment.Weapon.Shoot;
+        inputHandler.OnShootStarted -= Shoot;
     }
 
     private void CheckMoving()
@@ -98,5 +98,11 @@ public class Player : MonoBehaviour
     {
         isADS = !isADS;
         OnADS?.Invoke(isADS);
+    }
+
+    private void Shoot()
+    {
+        equipment.Weapon.Shoot();
+        StartCoroutine(cameraHandler.ApplyRecoil(stat.Handling));
     }
 }
