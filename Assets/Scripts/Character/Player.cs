@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     private PlayerCameraHandler cameraHandler;
     private PlayerStatHandler stat;
     private PlayerEquipment equipment;
+    private PlayerAnimationHandler animationHandler;
 
     private bool isMoving = false;
     private bool isMoveTransition = false;
@@ -19,16 +20,12 @@ public class Player : MonoBehaviour
         cameraHandler = GetComponent<PlayerCameraHandler>();
         stat = GetComponent<PlayerStatHandler>();
         equipment = GetComponent<PlayerEquipment>();
+        animationHandler = GetComponentInChildren<PlayerAnimationHandler>();
     }
 
     private void OnEnable()
     {
         inputHandler.OnADSStarted += TriggerADS;
-    }
-
-    private void Start()
-    {
-        
     }
 
     private void Update()
@@ -53,8 +50,10 @@ public class Player : MonoBehaviour
     {
         stat.Init(characterData);
         var weapon = equipment.EquipWeapon(weaponData);
+        animationHandler.OnReloadComplete += weapon.Reload;
         inputHandler.OnShootStarted += () => weapon.Shoot(stat.Recoil);
         cameraHandler.Init(weapon);
+        inputHandler.OnReloadStarted += animationHandler.Reload;
     }
 
     private void CheckMoving()

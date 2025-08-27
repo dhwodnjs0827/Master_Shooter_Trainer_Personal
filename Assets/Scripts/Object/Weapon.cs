@@ -42,7 +42,6 @@ public class Weapon : MonoBehaviour
     public void Reload()
     {
         currentAmmo = maxAmmo;
-        Debug.Log("재장전!");
     }
 
     private void OnDrawGizmos()
