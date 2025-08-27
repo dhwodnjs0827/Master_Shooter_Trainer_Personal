@@ -28,9 +28,10 @@ public class Player : MonoBehaviour
         inputHandler = GetComponent<PlayerInputHandler>();
         controller = GetComponent<PlayerController>();
         cameraHandler = GetComponent<PlayerCameraHandler>();
+        stat = GetComponent<PlayerStatHandler>();
         equipment = GetComponent<PlayerEquipment>();
-        stat = new PlayerStatHandler(playerSO);
 
+        stat.Init(playerSO);
         equipment.EquipWeapon();
     }
 

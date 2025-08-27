@@ -1,16 +1,18 @@
-public class PlayerStatHandler
+using UnityEngine;
+
+public class PlayerStatHandler : MonoBehaviour
 {
-    private float speed;
-    private float step;
-    private float recoil;
-    private float handling;
+    [SerializeField, Range(0f, 100f)] private float speed;
+    [SerializeField, Range(0f, 100f)] private float step;
+    [SerializeField, Range(0f, 100f)] private float recoil;
+    [SerializeField, Range(0f, 100f)] private float handling;
     
     public float Speed => speed;
     public float Step => step;
     public float Recoil => recoil;
     public float Handling => handling;
     
-    public PlayerStatHandler(PlayerSO data)
+    public void Init(PlayerSO data)
     {
         speed = data.Speed;
         step = data.Step;

@@ -22,6 +22,11 @@ public class PlayerCameraHandler : MonoBehaviour
 
     private Vector3 initArmModelRotaton;
 
+    [Header("Multiplier")]
+    [SerializeField, Range(0f, 0.01f)] private float stepNoiseMultiplier = 0.006f;
+    [SerializeField, Range(0f, 1f)] private float recoilMultiplier = 1f;
+    [SerializeField, Range(0f, 1f)] private float shakeMultiplier = 0.5f;
+
 
     private void Awake()
     {
@@ -73,10 +78,10 @@ public class PlayerCameraHandler : MonoBehaviour
         weaponCamera.transform.position = virtualCamera.position;
     }
 
-    private IEnumerator FadeStepShakeIn()
+    private IEnumerator FadeStepShakeIn(float stepValue)
     {
         // step 수치에 따른 흔들림 계산
-        //stepNoiseAmplitudeGain = 0.14f * (1f - stepValue / 100f);
+        float stepAmount = (Constants.MAX_STAT_VALUE - stepValue) * stepNoiseMultiplier;
 
         float currentAmplitude = currentSteopShakeNoise.m_AmplitudeGain;
         float duration = 0.5f;
@@ -85,12 +90,12 @@ public class PlayerCameraHandler : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            weaponStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepNoiseAmplitudeGain, elapsed / duration);
-            playerStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepNoiseAmplitudeGain, elapsed / duration);
+            weaponStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepAmount, elapsed / duration);
+            playerStepShakeNoise.m_AmplitudeGain = Mathf.Lerp(currentAmplitude, stepAmount, elapsed / duration);
             yield return null;
         }
-        playerStepShakeNoise.m_AmplitudeGain = stepNoiseAmplitudeGain;
-        weaponStepShakeNoise.m_AmplitudeGain = stepNoiseAmplitudeGain;
+        playerStepShakeNoise.m_AmplitudeGain = stepAmount;
+        weaponStepShakeNoise.m_AmplitudeGain = stepAmount;
         stepFadeCoroutine = null;
     }
 
@@ -122,7 +127,7 @@ public class PlayerCameraHandler : MonoBehaviour
             }
             if (player.IsMoving)
             {
-                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn());
+                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn(player.Stat.Step));
             }
             else
             {
@@ -138,10 +143,11 @@ public class PlayerCameraHandler : MonoBehaviour
         weaponCamera.gameObject.SetActive(isADS);
     }
 
-    public IEnumerator ApplyRecoil(float recoil)
+    public IEnumerator ApplyRecoil(float recoilValue)
     {
+        float recoilAmount = (Constants.MAX_STAT_VALUE - recoilValue) * recoilMultiplier;
         Vector3 currentRotation = cameraContainer.localEulerAngles;
-        Vector3 targetRotation = new Vector3(currentRotation.x - recoil, 0f, 0f);
+        Vector3 targetRotation = new Vector3(currentRotation.x - recoilAmount, 0f, 0f);
         float duration = 0.05f;
         float elapsed = 0f;
         while (elapsed < duration)
@@ -155,8 +161,9 @@ public class PlayerCameraHandler : MonoBehaviour
 
     public void HandShake(float handlingValue)
     {
-        float rotX = (Mathf.PerlinNoise(Time.time * 0.7f, 0f) - 0.5f) * handlingValue * 0.5f;
-        float rotY = (Mathf.PerlinNoise(0f, Time.time * 0.7f) - 0.5f) * handlingValue * 0.5f;
+        float shakeAmount = (Constants.MAX_STAT_VALUE - handlingValue) * shakeMultiplier;
+        float rotX = (Mathf.PerlinNoise(Time.time * 0.7f, 0f) - 0.5f) * shakeAmount;
+        float rotY = (Mathf.PerlinNoise(0f, Time.time * 0.7f) - 0.5f) * shakeAmount;
         armModel.localEulerAngles = initArmModelRotaton + new Vector3(rotX, rotY, 0f);
     }
 }
