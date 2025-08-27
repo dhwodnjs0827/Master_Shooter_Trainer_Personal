@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerCameraHandler : MonoBehaviour
 {
-    private Player player;
-
     [SerializeField] private Transform cameraContainer;
     [SerializeField] private Transform armModel;
 
@@ -16,10 +14,7 @@ public class PlayerCameraHandler : MonoBehaviour
     private CinemachineBasicMultiChannelPerlin currentSteopShakeNoise;
     private CinemachineBasicMultiChannelPerlin playerStepShakeNoise;
     private CinemachineBasicMultiChannelPerlin weaponStepShakeNoise;
-
-    private float stepNoiseAmplitudeGain = 0.14f;
     private Coroutine stepFadeCoroutine;
-
     private Vector3 initArmModelRotaton;
 
     [Header("Multiplier")]
@@ -30,7 +25,6 @@ public class PlayerCameraHandler : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponent<Player>();
         playerStepShakeNoise = playerCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         weaponStepShakeNoise = weaponCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         currentSteopShakeNoise = playerStepShakeNoise;
@@ -38,20 +32,10 @@ public class PlayerCameraHandler : MonoBehaviour
         initArmModelRotaton = armModel.eulerAngles;
     }
 
-    private void OnEnable()
+    public void Init(Weapon weapon)
     {
-        player.OnADS += ChangeCurrentCamera;
-    }
-
-    private void Update()
-    {
-        StepNoise();
-        HandShake(player.Stat.Handling);
-    }
-
-    private void OnDisable()
-    {
-        player.OnADS -= ChangeCurrentCamera;
+        weaponCamera.transform.position = weapon.CameraPoint.position;
+        weapon.OnRecoil += ApplyRecoil;
     }
 
     public void Look(Vector2 inputDir)
@@ -71,11 +55,6 @@ public class PlayerCameraHandler : MonoBehaviour
         // 좌우 회전
         float deltaX = inputDir.x * Constants.MOUSE_SENSITIVITY;
         transform.Rotate(Vector3.up * deltaX);
-    }
-
-    public void SetWeaponCameraPosition(Transform virtualCamera)
-    {
-        weaponCamera.transform.position = virtualCamera.position;
     }
 
     private IEnumerator FadeStepShakeIn(float stepValue)
@@ -117,17 +96,17 @@ public class PlayerCameraHandler : MonoBehaviour
         stepFadeCoroutine = null;
     }
 
-    private void StepNoise()
+    public void StepNoise(float stepValue, bool isMoveTransition, bool isMoving)
     {
-        if (player.IsMoveTransition)
+        if (isMoveTransition)
         {
             if (stepFadeCoroutine != null)
             {
                 StopCoroutine(stepFadeCoroutine);
             }
-            if (player.IsMoving)
+            if (isMoving)
             {
-                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn(player.Stat.Step));
+                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn(stepValue));
             }
             else
             {
@@ -136,14 +115,14 @@ public class PlayerCameraHandler : MonoBehaviour
         }
     }
 
-    private void ChangeCurrentCamera(bool isADS)
+    public void ChangeCurrentCamera(bool isADS)
     {
         currentSteopShakeNoise = isADS ? weaponStepShakeNoise : playerStepShakeNoise;
         playerCamera.gameObject.SetActive(!isADS);
         weaponCamera.gameObject.SetActive(isADS);
     }
 
-    public IEnumerator ApplyRecoil(float recoilValue)
+    public IEnumerator CoroutineApplyRecoil(float recoilValue)
     {
         float recoilAmount = (Constants.MAX_STAT_VALUE - recoilValue) * recoilMultiplier;
         Vector3 currentRotation = cameraContainer.localEulerAngles;
@@ -157,6 +136,11 @@ public class PlayerCameraHandler : MonoBehaviour
             yield return null;
         }
         cameraContainer.localEulerAngles = targetRotation;
+    }
+
+    private void ApplyRecoil(float recoilValue)
+    {
+        StartCoroutine(CoroutineApplyRecoil(recoilValue));
     }
 
     public void HandShake(float handlingValue)

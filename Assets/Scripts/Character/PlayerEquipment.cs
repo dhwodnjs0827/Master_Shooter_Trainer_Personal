@@ -7,9 +7,10 @@ public class PlayerEquipment : MonoBehaviour
 
     public Weapon Weapon => weapon;
 
-    public void EquipWeapon()
+    public Weapon EquipWeapon()
     {
         var prefab = Resources.Load<Weapon>("Prefabs/Weapon/W0001");
         weapon = Instantiate(prefab, weaponPos);
+        return weapon;
     }
 }

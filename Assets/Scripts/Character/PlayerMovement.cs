@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     private CharacterController characterController;
 
@@ -16,6 +16,6 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 moveDir = new Vector3(inputDir.x, 0, inputDir.y).normalized;
         moveDir = transform.TransformDirection(moveDir);
-        characterController.Move(moveDir * speed  * speedMultiplier * Time.deltaTime);
+        characterController.Move(moveDir * speed * speedMultiplier * Time.deltaTime);
     }
 }

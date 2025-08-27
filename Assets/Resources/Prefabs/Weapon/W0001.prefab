@@ -357,9 +357,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f55a4475621c64c78887f8e56abc209f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSO: {fileID: 11400000, guid: 3ee27be0cd79b4b449e6ec02a5d28aa4, type: 2}
+  weaponSO: {fileID: 11400000, guid: c3ab6be16667443559e5998188e9d550, type: 2}
   model: {fileID: 3365592958773107177}
-  adsCamera: {fileID: 0}
   cameraPoint: {fileID: 7163239850571878630}
   frontSight: {fileID: 89314678179516956}
   rearSight: {fileID: 4571201043517610876}

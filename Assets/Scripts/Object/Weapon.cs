@@ -1,5 +1,4 @@
 using System;
-using Cinemachine;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -14,7 +13,7 @@ public class Weapon : MonoBehaviour
     private int currentAmmo;
 
     public Transform CameraPoint => cameraPoint;
-    public event Action OnShoot;
+    public event Action<float> OnRecoil;
 
     void Awake()
     {
@@ -22,21 +21,27 @@ public class Weapon : MonoBehaviour
         currentAmmo = maxAmmo;
     }
 
-    public void Shoot()
+    public void Shoot(float recoilValue)
     {
         if (currentAmmo == 0)
         {
+            Debug.Log("재장전 필요!");
             return;
         }
-        Debug.Log("발사!");
         currentAmmo--;
         Vector3 bulletDirection = (frontSight.position - rearSight.position).normalized;
         Ray bulletRay = new Ray(frontSight.position, bulletDirection);
         if (Physics.Raycast(bulletRay, out RaycastHit hitInfo))
         {
-            Debug.Log(hitInfo.collider.gameObject);
+            Debug.Log($"{hitInfo.collider.gameObject.name}에 {weaponSO.Damage} 데미지");
         }
-        OnShoot?.Invoke();
+        OnRecoil?.Invoke(recoilValue);
+    }
+
+    public void Reload()
+    {
+        currentAmmo = maxAmmo;
+        Debug.Log("재장전!");
     }
 
     private void OnDrawGizmos()

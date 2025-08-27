@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerSO playerSO;
     private PlayerInputHandler inputHandler;
-    private PlayerController controller;
+    private PlayerMovement movement;
     private PlayerCameraHandler cameraHandler;
     private PlayerStatHandler stat;
     private PlayerEquipment equipment;
@@ -14,42 +14,35 @@ public class Player : MonoBehaviour
     private bool isMoveTransition = false;
     private bool isADS = false;
 
-    public PlayerInputHandler InputHandler => inputHandler;
-    public PlayerStatHandler Stat => stat;
-    public PlayerEquipment Equipment => equipment;
-
-    public bool IsMoving => isMoving;
-    public bool IsMoveTransition => isMoveTransition;
-    public bool IsADS => isADS;
-    public event Action<bool> OnADS;
-
     private void Awake()
     {
         inputHandler = GetComponent<PlayerInputHandler>();
-        controller = GetComponent<PlayerController>();
+        movement = GetComponent<PlayerMovement>();
         cameraHandler = GetComponent<PlayerCameraHandler>();
         stat = GetComponent<PlayerStatHandler>();
         equipment = GetComponent<PlayerEquipment>();
 
         stat.Init(playerSO);
-        equipment.EquipWeapon();
     }
 
     private void OnEnable()
     {
         inputHandler.OnADSStarted += TriggerADS;
-        inputHandler.OnShootStarted += Shoot;
     }
 
     private void Start()
     {
-        cameraHandler.SetWeaponCameraPosition(equipment.Weapon.CameraPoint);
+        var weapon = equipment.EquipWeapon();
+        inputHandler.OnShootStarted += () => weapon.Shoot(stat.Recoil);
+        cameraHandler.Init(weapon);
     }
 
     private void Update()
     {
         CheckMoving();
-        controller.Move(inputHandler.MoveDirection, stat.Speed);
+        movement.Move(inputHandler.MoveDirection, stat.Speed);
+        cameraHandler.StepNoise(stat.Step, isMoveTransition, isMoving);
+        cameraHandler.HandShake(stat.Handling);
     }
 
     private void LateUpdate()
@@ -60,7 +53,6 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         inputHandler.OnADSStarted -= TriggerADS;
-        inputHandler.OnShootStarted -= Shoot;
     }
 
     private void CheckMoving()
@@ -98,12 +90,6 @@ public class Player : MonoBehaviour
     private void TriggerADS()
     {
         isADS = !isADS;
-        OnADS?.Invoke(isADS);
-    }
-
-    private void Shoot()
-    {
-        equipment.Weapon.Shoot();
-        StartCoroutine(cameraHandler.ApplyRecoil(stat.Recoil));
+        cameraHandler.ChangeCurrentCamera(isADS);
     }
 }
