@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private WeaponSO weaponSO;
     [SerializeField] private Transform model;
     [SerializeField] private Transform cameraPoint;
     [SerializeField] private Transform frontSight;
@@ -11,13 +10,15 @@ public class Weapon : MonoBehaviour
 
     private int maxAmmo;
     private int currentAmmo;
+    private float damage;
 
     public Transform CameraPoint => cameraPoint;
     public event Action<float> OnRecoil;
 
-    void Awake()
+    public void Init(WeaponSO selectedWeaponData)
     {
-        maxAmmo = weaponSO.MaxAmmo;
+        damage = selectedWeaponData.Damage;
+        maxAmmo = selectedWeaponData.MaxAmmo;
         currentAmmo = maxAmmo;
     }
 
@@ -33,7 +34,7 @@ public class Weapon : MonoBehaviour
         Ray bulletRay = new Ray(frontSight.position, bulletDirection);
         if (Physics.Raycast(bulletRay, out RaycastHit hitInfo))
         {
-            Debug.Log($"{hitInfo.collider.gameObject.name}에 {weaponSO.Damage} 데미지");
+            Debug.Log($"{hitInfo.collider.gameObject.name}에 {damage} 데미지");
         }
         OnRecoil?.Invoke(recoilValue);
     }

@@ -1,9 +1,7 @@
-using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private PlayerSO playerSO;
     private PlayerInputHandler inputHandler;
     private PlayerMovement movement;
     private PlayerCameraHandler cameraHandler;
@@ -21,8 +19,6 @@ public class Player : MonoBehaviour
         cameraHandler = GetComponent<PlayerCameraHandler>();
         stat = GetComponent<PlayerStatHandler>();
         equipment = GetComponent<PlayerEquipment>();
-
-        stat.Init(playerSO);
     }
 
     private void OnEnable()
@@ -32,9 +28,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        var weapon = equipment.EquipWeapon();
-        inputHandler.OnShootStarted += () => weapon.Shoot(stat.Recoil);
-        cameraHandler.Init(weapon);
+        
     }
 
     private void Update()
@@ -53,6 +47,14 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         inputHandler.OnADSStarted -= TriggerADS;
+    }
+
+    public void Init(PlayerSO characterData, WeaponSO weaponData)
+    {
+        stat.Init(characterData);
+        var weapon = equipment.EquipWeapon(weaponData);
+        inputHandler.OnShootStarted += () => weapon.Shoot(stat.Recoil);
+        cameraHandler.Init(weapon);
     }
 
     private void CheckMoving()
@@ -90,6 +92,6 @@ public class Player : MonoBehaviour
     private void TriggerADS()
     {
         isADS = !isADS;
-        cameraHandler.ChangeCurrentCamera(isADS);
+        cameraHandler.ChangeCameraView(isADS);
     }
 }

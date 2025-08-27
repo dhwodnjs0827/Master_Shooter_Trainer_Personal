@@ -115,7 +115,7 @@ public class PlayerCameraHandler : MonoBehaviour
         }
     }
 
-    public void ChangeCurrentCamera(bool isADS)
+    public void ChangeCameraView(bool isADS)
     {
         currentSteopShakeNoise = isADS ? weaponStepShakeNoise : playerStepShakeNoise;
         playerCamera.gameObject.SetActive(!isADS);
