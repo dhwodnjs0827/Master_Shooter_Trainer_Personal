@@ -5,14 +5,15 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     [SerializeField] private WeaponSO weaponSO;
-    [SerializeField] private CinemachineVirtualCamera adsCamera;
+    [SerializeField] private Transform model;
+    [SerializeField] private Transform cameraPoint;
     [SerializeField] private Transform frontSight;
     [SerializeField] private Transform rearSight;
 
     private int maxAmmo;
     private int currentAmmo;
 
-    public CinemachineVirtualCamera ADSCamera => adsCamera;
+    public Transform CameraPoint => cameraPoint;
     public event Action OnShoot;
 
     void Awake()

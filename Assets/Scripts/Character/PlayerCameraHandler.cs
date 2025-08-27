@@ -1,17 +1,17 @@
 using System.Collections;
 using Cinemachine;
 using DataDeclaration;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerCameraHandler : MonoBehaviour
 {
     private Player player;
 
+    [SerializeField] private Transform cameraContainer;
     [SerializeField] private Transform armModel;
 
     [SerializeField] private CinemachineVirtualCamera playerCamera;
-    private CinemachineVirtualCamera weaponCamera;
+    [SerializeField] private CinemachineVirtualCamera weaponCamera;
 
     private CinemachineBasicMultiChannelPerlin currentSteopShakeNoise;
     private CinemachineBasicMultiChannelPerlin playerStepShakeNoise;
@@ -20,12 +20,17 @@ public class PlayerCameraHandler : MonoBehaviour
     private float stepNoiseAmplitudeGain = 0.14f;
     private Coroutine stepFadeCoroutine;
 
+    private Vector3 initArmModelRotaton;
+
 
     private void Awake()
     {
         player = GetComponent<Player>();
         playerStepShakeNoise = playerCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        weaponStepShakeNoise = weaponCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         currentSteopShakeNoise = playerStepShakeNoise;
+
+        initArmModelRotaton = armModel.eulerAngles;
     }
 
     private void OnEnable()
@@ -36,6 +41,7 @@ public class PlayerCameraHandler : MonoBehaviour
     private void Update()
     {
         StepNoise();
+        HandShake(player.Stat.Handling);
     }
 
     private void OnDisable()
@@ -46,7 +52,7 @@ public class PlayerCameraHandler : MonoBehaviour
     public void Look(Vector2 inputDir)
     {
         // 상하 회전
-        Vector3 curRotation = armModel.localEulerAngles;
+        Vector3 curRotation = cameraContainer.localEulerAngles;
         float rotationX = curRotation.x;
         // 0~360 범위를 -180~180도로 변환
         if (rotationX > 180)
@@ -55,17 +61,16 @@ public class PlayerCameraHandler : MonoBehaviour
         }
         rotationX -= inputDir.y * Constants.MOUSE_SENSITIVITY;
         rotationX = Mathf.Clamp(rotationX, Constants.MIN_MOUSE_ROT_Y, Constants.MAX_MOUSE_ROT_Y);
-        armModel.localEulerAngles = new Vector3(rotationX, 0f, 0f);
+        cameraContainer.localEulerAngles = new Vector3(rotationX, 0f, 0f);
 
         // 좌우 회전
         float deltaX = inputDir.x * Constants.MOUSE_SENSITIVITY;
         transform.Rotate(Vector3.up * deltaX);
     }
 
-    public void RegisterWeaponCamera(CinemachineVirtualCamera virtualCamera)
+    public void SetWeaponCameraPosition(Transform virtualCamera)
     {
-        weaponCamera = virtualCamera;
-        weaponStepShakeNoise = weaponCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        weaponCamera.transform.position = virtualCamera.position;
     }
 
     private IEnumerator FadeStepShakeIn()
@@ -135,16 +140,23 @@ public class PlayerCameraHandler : MonoBehaviour
 
     public IEnumerator ApplyRecoil(float recoil)
     {
-        Vector3 currentRotation = armModel.localEulerAngles;
+        Vector3 currentRotation = cameraContainer.localEulerAngles;
         Vector3 targetRotation = new Vector3(currentRotation.x - recoil, 0f, 0f);
         float duration = 0.05f;
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            armModel.localEulerAngles = Vector3.Lerp(currentRotation, targetRotation, elapsed / duration);
+            cameraContainer.localEulerAngles = Vector3.Lerp(currentRotation, targetRotation, elapsed / duration);
             yield return null;
         }
-        armModel.localEulerAngles = targetRotation;
+        cameraContainer.localEulerAngles = targetRotation;
+    }
+
+    public void HandShake(float handlingValue)
+    {
+        float rotX = (Mathf.PerlinNoise(Time.time * 0.7f, 0f) - 0.5f) * handlingValue * 0.5f;
+        float rotY = (Mathf.PerlinNoise(0f, Time.time * 0.7f) - 0.5f) * handlingValue * 0.5f;
+        armModel.localEulerAngles = initArmModelRotaton + new Vector3(rotX, rotY, 0f);
     }
 }

@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        cameraHandler.RegisterWeaponCamera(equipment.Weapon.ADSCamera);
+        cameraHandler.SetWeaponCameraPosition(equipment.Weapon.CameraPoint);
     }
 
     private void Update()
@@ -103,6 +103,6 @@ public class Player : MonoBehaviour
     private void Shoot()
     {
         equipment.Weapon.Shoot();
-        StartCoroutine(cameraHandler.ApplyRecoil(stat.Handling));
+        StartCoroutine(cameraHandler.ApplyRecoil(stat.Recoil));
     }
 }

@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 moveDir = new Vector3(inputDir.x, 0, inputDir.y).normalized;
         moveDir = transform.TransformDirection(moveDir);
+        // 0.3f: 이동속도 조절 상수
         characterController.Move(moveDir * moveSpeed  * 0.3f * Time.deltaTime);
     }
 }
