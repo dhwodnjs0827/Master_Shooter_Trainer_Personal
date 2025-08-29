@@ -57,6 +57,40 @@ public class PlayerCameraHandler : MonoBehaviour
         transform.Rotate(Vector3.up * deltaX);
     }
 
+    public void ChangeCameraView(bool isADS)
+    {
+        currentSteopShakeNoise = isADS ? weaponStepShakeNoise : playerStepShakeNoise;
+        playerCamera.gameObject.SetActive(!isADS);
+        weaponCamera.gameObject.SetActive(isADS);
+    }
+
+    public void StepNoise(float stepValue, bool isMoveTransition, bool isMoving)
+    {
+        if (isMoveTransition)
+        {
+            if (stepFadeCoroutine != null)
+            {
+                StopCoroutine(stepFadeCoroutine);
+            }
+            if (isMoving)
+            {
+                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn(stepValue));
+            }
+            else
+            {
+                stepFadeCoroutine = StartCoroutine(FadeStepShakeOut());
+            }
+        }
+    }
+
+    public void HandShake(float handlingValue)
+    {
+        float shakeAmount = (Constants.MAX_STAT_VALUE - handlingValue) * shakeMultiplier;
+        float rotX = (Mathf.PerlinNoise(Time.time * 0.7f, 0f) - 0.5f) * shakeAmount;
+        float rotY = (Mathf.PerlinNoise(0f, Time.time * 0.7f) - 0.5f) * shakeAmount;
+        armModel.localEulerAngles = initArmModelRotaton + new Vector3(rotX, rotY, 0f);
+    }
+
     private IEnumerator FadeStepShakeIn(float stepValue)
     {
         // step 수치에 따른 흔들림 계산
@@ -96,33 +130,7 @@ public class PlayerCameraHandler : MonoBehaviour
         stepFadeCoroutine = null;
     }
 
-    public void StepNoise(float stepValue, bool isMoveTransition, bool isMoving)
-    {
-        if (isMoveTransition)
-        {
-            if (stepFadeCoroutine != null)
-            {
-                StopCoroutine(stepFadeCoroutine);
-            }
-            if (isMoving)
-            {
-                stepFadeCoroutine = StartCoroutine(FadeStepShakeIn(stepValue));
-            }
-            else
-            {
-                stepFadeCoroutine = StartCoroutine(FadeStepShakeOut());
-            }
-        }
-    }
-
-    public void ChangeCameraView(bool isADS)
-    {
-        currentSteopShakeNoise = isADS ? weaponStepShakeNoise : playerStepShakeNoise;
-        playerCamera.gameObject.SetActive(!isADS);
-        weaponCamera.gameObject.SetActive(isADS);
-    }
-
-    public IEnumerator CoroutineApplyRecoil(float recoilValue)
+    private IEnumerator CoroutineApplyRecoil(float recoilValue)
     {
         float recoilAmount = (Constants.MAX_STAT_VALUE - recoilValue) * recoilMultiplier;
         Vector3 currentRotation = cameraContainer.localEulerAngles;
@@ -141,13 +149,5 @@ public class PlayerCameraHandler : MonoBehaviour
     private void ApplyRecoil(float recoilValue)
     {
         StartCoroutine(CoroutineApplyRecoil(recoilValue));
-    }
-
-    public void HandShake(float handlingValue)
-    {
-        float shakeAmount = (Constants.MAX_STAT_VALUE - handlingValue) * shakeMultiplier;
-        float rotX = (Mathf.PerlinNoise(Time.time * 0.7f, 0f) - 0.5f) * shakeAmount;
-        float rotY = (Mathf.PerlinNoise(0f, Time.time * 0.7f) - 0.5f) * shakeAmount;
-        armModel.localEulerAngles = initArmModelRotaton + new Vector3(rotX, rotY, 0f);
     }
 }

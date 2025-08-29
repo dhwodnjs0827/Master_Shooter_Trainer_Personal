@@ -4,13 +4,12 @@ using UnityEngine;
 public class PlayerAnimationHandler : MonoBehaviour
 {
     private Animator animator;
-    private bool canReload;
+    private bool canReload = true;
     public event Action OnReloadComplete;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
-        canReload = true;
     }
 
     public void Reload()
@@ -22,6 +21,7 @@ public class PlayerAnimationHandler : MonoBehaviour
         }
     }
 
+    // Player_Reload 애니메이션 클립 끝에 이벤트로 등록됨
     private void ReloadComplete()
     {
         canReload = true;

@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private Transform model;
     [SerializeField] private Transform cameraPoint;
+    [SerializeField] private Transform muzzlePoint;
     [SerializeField] private Transform frontSight;
     [SerializeField] private Transform rearSight;
+
+    [SerializeField] private GameObject muzzleFX;
 
     private int maxAmmo;
     private int currentAmmo;
@@ -36,6 +38,7 @@ public class Weapon : MonoBehaviour
         {
             Debug.Log($"{hitInfo.collider.gameObject.name}에 {damage} 데미지");
         }
+        Instantiate(muzzleFX, muzzlePoint);
         OnRecoil?.Invoke(recoilValue);
     }
 
