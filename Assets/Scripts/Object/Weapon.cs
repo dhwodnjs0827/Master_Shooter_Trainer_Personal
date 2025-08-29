@@ -7,7 +7,6 @@ public class Weapon : MonoBehaviour
     [SerializeField] private Transform muzzlePoint;
     [SerializeField] private Transform frontSight;
     [SerializeField] private Transform rearSight;
-
     [SerializeField] private GameObject muzzleFX;
 
     private int maxAmmo;
@@ -36,7 +35,10 @@ public class Weapon : MonoBehaviour
         Ray bulletRay = new Ray(frontSight.position, bulletDirection);
         if (Physics.Raycast(bulletRay, out RaycastHit hitInfo))
         {
-            Debug.Log($"{hitInfo.collider.gameObject.name}에 {damage} 데미지");
+            if (hitInfo.collider.TryGetComponent(out IBodyPartDamageReceiver target))
+            {
+                target.ReceiveBodyPartDamage(damage, hitInfo.point, hitInfo.normal);
+            }
         }
         Instantiate(muzzleFX, muzzlePoint);
         OnRecoil?.Invoke(recoilValue);
